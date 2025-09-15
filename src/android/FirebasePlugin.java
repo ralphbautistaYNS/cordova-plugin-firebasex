@@ -38,7 +38,6 @@ import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneMultiFactorGenerator;
 import com.google.firebase.auth.PhoneMultiFactorInfo;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
