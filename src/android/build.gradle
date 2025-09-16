@@ -21,5 +21,20 @@ android {
     }
 }
 
+// Disable Crashlytics Gradle plugin tasks if any subproject applies it
+gradle.projectsEvaluated {
+    subprojects { proj ->
+        if (proj.plugins.findPlugin('com.google.firebase.crashlytics')) {
+            proj.tasks.matching { it.name?.toLowerCase()?.contains('crashlytics') }.all { it.enabled = false }
+        }
+    }
+}
+
+// Exclude Crashlytics libraries from all configurations
+configurations.all {
+    exclude group: 'com.google.firebase', module: 'firebase-crashlytics'
+    exclude group: 'com.google.firebase', module: 'firebase-crashlytics-ndk'
+}
+
 
 
