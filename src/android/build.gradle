@@ -30,11 +30,39 @@ gradle.projectsEvaluated {
     }
 }
 
+// As a belt-and-braces approach, disable any Crashlytics tasks right before execution
+gradle.taskGraph.whenReady { graph ->
+    graph.allTasks.each { t ->
+        if ((t.name ?: '').toLowerCase().contains('crashlytics')) {
+            t.enabled = false
+        }
+    }
+}
+
 // Exclude Crashlytics libraries from all configurations
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-crashlytics'
     exclude group: 'com.google.firebase', module: 'firebase-crashlytics-ndk'
 }
+
+// Exclude Crashlytics native .so files from the app packaging if present
+subprojects { proj ->
+    if (proj.name == 'app' && proj.hasProperty('android')) {
+        proj.android {
+            packagingOptions {
+                exclude 'lib/**/libcrashlytics.so'
+                exclude 'lib/**/libcrashlytics-common.so'
+                exclude 'lib/**/libcrashlytics-handler.so'
+                exclude 'lib/**/libcrashlytics-trampoline.so'
+            }
+        }
+    }
+}
+
+// Disable Crashlytics via Gradle properties if respected by applied plugin
+ext["firebaseCrashlytics.enabled"] = false
+ext["firebaseCrashlytics.mappingFileIdEnabled"] = false
+ext["firebaseCrashlytics.ndk.enabled"] = false
 
 
 
